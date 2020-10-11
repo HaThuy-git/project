@@ -72,7 +72,7 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
             <div class="container">
                 <div class="col-sm-5 col-md-offset-2  header-login">
                     <ul>
-                        <li><a href="login.html">Login</a></li>
+                       <li><a onclick="logout()" id="accountLocalStorage" style="cursor:pointer;">Login</a></li>
                         <li><a href="register.html">Register</a></li>
                         <li><a href="checkout.html">Checkout</a></li>
                     </ul>
@@ -253,22 +253,22 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
     <!--login-->
     <div class="container">
         <div class="login">
-            <form>
+            <form onsubmit="postUser()">
                 <div class="col-md-6 login-do">
                     <div class="login-mail">
-                        <input type="text" placeholder="Name" required="">
+                        <input type="text" placeholder="Name" id="name" required="">
                         <i class="glyphicon glyphicon-user"></i>
                     </div>
                     <div class="login-mail">
-                        <input type="text" placeholder="Phone Number" required="">
+                        <input type="text" placeholder="Phone Number" id="phone" required="">
                         <i class="glyphicon glyphicon-phone"></i>
                     </div>
                     <div class="login-mail">
-                        <input type="text" placeholder="Email" required="">
+                        <input type="text" placeholder="Email" id="email" required="">
                         <i class="glyphicon glyphicon-envelope"></i>
                     </div>
                     <div class="login-mail">
-                        <input type="password" placeholder="Password" required="">
+                        <input type="password" placeholder="Password" id="password" required="">
                         <i class="glyphicon glyphicon-lock"></i>
                     </div>
                     <!-- <a class="news-letter " href="#">
@@ -339,7 +339,7 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
                     <ul class="in in1">
                         <li><a href="#">Order History</a></li>
                         <li><a href="wishlist.html">Wish List</a></li>
-                        <li><a href="login.html">Login</a></li>
+                       <li><a onclick="logout()" id="accountLocalStorage" style="cursor:pointer;">Login</a></li>
                     </ul>
                     <div class="clearfix"></div>
                 </div>
@@ -393,7 +393,7 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
     </script>
     <!-- slide -->
     <script src="js/bootstrap.min.js"></script>
-
+    <script type="text/javascript" src="js/utils.js"></script>
 </body>
 
 </html>
