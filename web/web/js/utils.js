@@ -330,7 +330,15 @@ function getProducts(_skip) {
 
 async function singlePage(_id) {
   var json = await get(URL + '/products?_id=' + _id);
-  console.log(json);
+  var product = json.data[0];
+  if (json.total) {
+    document.getElementById("productNameChange").innerHTML = product.name;
+    document.getElementById("costProductChange").innerHTML = `$${(product.cost - product.discount).toFixed(2)}`;
+    document.getElementById("imageProductChange").innerHTML = `<ul class="slides"><li data-thumb="${product.image}"><div class="thumb-image"> <img src="${product.image}" data-imagezoom="true" class="img-responsive"> </div></li><li data-thumb="images/edition1-1.png"><div class="thumb-image"> <img src="images/edition1-1.png" data-imagezoom="true" class="img-responsive"> </div></li></ul>`;
+    document.getElementById('tab1').innerHTML = `<div class="facts"><p>${product.description}</p><ul><li><span class="glyphicon glyphicon-ok" aria-hidden="true"></span>Research</li><li><span class="glyphicon glyphicon-ok" aria-hidden="true"></span>Design and Development</li><li><span class="glyphicon glyphicon-ok" aria-hidden="true"></span>Porting and Optimization</li><li><span class="glyphicon glyphicon-ok" aria-hidden="true"></span>System integration</li><li><span class="glyphicon glyphicon-ok" aria-hidden="true"></span>Verification, Validation and Testing</li><li><span class="glyphicon glyphicon-ok" aria-hidden="true"></span>Maintenance and Support</li></ul></div>`;
+    document.getElementById('tab2').innerHTML = `<div class="facts"><p>${product.information}</p><ul><li><span class="glyphicon glyphicon-ok" aria-hidden="true"></span>Multimedia Systems</li><li><span class="glyphicon glyphicon-ok" aria-hidden="true"></span>Digital media adapters</li><li><span class="glyphicon glyphicon-ok" aria-hidden="true"></span>Set top boxes for HDTV and IPTV Player </li></ul></div>0`;
+    document.getElementById('tab3').innerHTML = `<div class="facts"><p>${product.reviews}</p><ul><li><span class="glyphicon glyphicon-ok" aria-hidden="true"></span>Research</li><li><span class="glyphicon glyphicon-ok" aria-hidden="true"></span>Design and Development</li><li><span class="glyphicon glyphicon-ok" aria-hidden="true"></span>Porting and Optimization</li><li><span class="glyphicon glyphicon-ok" aria-hidden="true"></span>System integration</li><li><span class="glyphicon glyphicon-ok" aria-hidden="true"></span>Verification, Validation and Testing</li><li><span class="glyphicon glyphicon-ok" aria-hidden="true"></span>Maintenance and Support</li></ul></div>`;
+  }
 }
 
 // run
