@@ -88,6 +88,61 @@ async function post(_collection, _object) {
   return json;
 }
 
+async function page_products(pageProduct, categoryId) {
+  var firstInner = '<ul class="pagination pagination-responsive"><li><a href="#">&laquo;</a></li><li><a href="#">&lsaquo;</a></li>';
+  var endInner = '<li><a href="#">&rsaquo;</a></li><li><a href="#">&raquo;</a></li></ul>';
+  var json = await get(URL + '/products-total?categoryId=' + categoryId);
+  var length = json.total;
+  var pages = 0;
+  if (length % 16 === 0) {
+    pages = length / 16;
+  }
+  else {
+    pages = Math.floor(length / 16) + 1;
+  }
+
+  var _temp = '';
+  for (let i = 1; i <= pages; i++) {
+    if (i === pageProduct) {
+      _temp += `<li><a style="background-color: #007bff; color:white; cursor:pointer;" onclick="changePage()" name="${i}">${i}</a></li>`;
+      continue;
+    }
+    _temp += `<li><a style="cursor:pointer;" onclick="changePage()" name="${i}">${i}</a></li>`;
+  }
+
+  document.getElementById('page_navigation').innerHTML = firstInner + _temp + endInner;
+}
+
+async function page_product_list(pageProduct, categoryId) {
+  var firstInner = '<ul class="pagination pagination-responsive"><li><a href="#">&laquo;</a></li><li><a href="#">&lsaquo;</a></li>';
+  var endInner = '<li><a href="#">&rsaquo;</a></li><li><a href="#">&raquo;</a></li></ul>';
+  var json = await get(URL + '/products-total?typeId=' + categoryId);
+  var length = json.total;
+  var pages = 0;
+  if (length % 16 === 0) {
+    pages = length / 16;
+  }
+  else {
+    pages = Math.floor(length / 16) + 1;
+  }
+
+  var _temp = '';
+  for (let i = 1; i <= pages; i++) {
+    if (i === pageProduct) {
+      _temp += `<li><a style="background-color: #007bff; color:white; cursor:pointer;" onclick="changePage()" name="${i}">${i}</a></li>`;
+      continue;
+    }
+    _temp += `<li><a style="cursor:pointer;" onclick="changePage()" name="${i}">${i}</a></li>`;
+  }
+
+  document.getElementById('page_navigation').innerHTML = firstInner + _temp + endInner;
+}
+
+function changePage() {
+  getProducts(parseInt(event.target.name) - 1);
+  // page_products(parseInt(event.target.name))
+}
+
 // api
 async function get(_url) {
   var res = await fetch(_url, {
@@ -127,7 +182,7 @@ async function postUser() {
 
 // products
 // edition
-async function getProduct(_nameCategory, _idDefault) {
+async function getProduct(_nameCategory, _idDefault, _skip) {
   var _categoryId = _idDefault;
   try {
     if (localStorage.getItem('categories')) {
@@ -141,8 +196,8 @@ async function getProduct(_nameCategory, _idDefault) {
   } catch (error) {
 
   }
-
-  var res = await fetch(URL + '/products?categoryId=' + _categoryId, {
+  page_products(_skip + 1, _categoryId);
+  var res = await fetch(URL + '/products?categoryId=' + _categoryId + `&$skip=${_skip * 16}` + '&$limit=16', {
     method: 'GET',
     headers: {
       'Accept': 'application/json',
@@ -152,11 +207,58 @@ async function getProduct(_nameCategory, _idDefault) {
   var json = await res.json();
   if (json.total) {
     var htmlInner = '';
+    document.getElementById('listProducts').innerHTML = htmlInner;
     var firstInner = '<div class="mid-popular">';
     var endInner = '<div class="clearfix"></div></div>';
     var _temp = ``;
     json.data.forEach((e, i) => {
-      _temp += `<div class="col-md-3 item-grid simpleCart_shelfItem"><div class=" mid-pop"><div class="pro-img"><img src="${e.image}" class="img-responsive" alt=""><div class="zoom-icon "><a class="picture" href="${e.image}" rel="title" class="b-link-stripe b-animate-gothickbox"><iclass="glyphicon glyphicon-search icon "></i></a><a href="single.html"><i class="glyphicon glyphicon-menu-right icon"></i></a></div></div><div class="mid-1"><div class="women"><div class="women-top"><span></span><h6><a href="single.html">${e.name}</a></h6></div><div class="img item_add"><a href="#"><img src="images/ca.png" alt=""></a></div><div class="clearfix"></div></div><div class="mid-2"><p><label>${e.discount > 0 ? `$${e.cost.toFixed(2)}` : ''}</label><em class="item_price">$${(e.cost - e.discount).toFixed(2)}</em></p><div class="block"><div class="starbox small ghosting"> </div></div><div class="clearfix"></div></div></div></div></div>`;
+      _temp += `<div class="col-md-3 item-grid simpleCart_shelfItem"><div class=" mid-pop"><div class="pro-img"><img src="${e.image}" class="img-responsive" alt=""><div class="zoom-icon "><a class="picture" href="${e.image}" rel="title" class="b-link-stripe b-animate-gothickbox"><iclass="glyphicon glyphicon-search icon "></i></a><a href="single.html?id=${e._id}"><i class="glyphicon glyphicon-menu-right icon"></i></a></div></div><div class="mid-1"><div class="women"><div class="women-top"><span></span><h6><a href="single.html?id=${e._id}">${e.name}</a></h6></div><div class="img item_add"><a href="#"><img src="images/ca.png" alt=""></a></div><div class="clearfix"></div></div><div class="mid-2"><p><label>${e.discount > 0 ? `$${e.cost.toFixed(2)}` : ''}</label><em class="item_price">$${(e.cost - e.discount).toFixed(2)}</em></p><div class="block"><div class="starbox small ghosting"> </div></div><div class="clearfix"></div></div></div></div></div>`;
+      if (i + 1 === json.data.length || (i + 1) % 4 === 0) {
+        htmlInner += firstInner + _temp + endInner;
+        _temp = '';
+      }
+    });
+    document.getElementById('listProducts').innerHTML = htmlInner;
+  } else {
+    console.log(json);
+  }
+}
+
+function detailProduct() {
+  console(event.target.name);
+}
+
+async function getProductList(_nameCategory, _idDefault, _skip) {
+  var _categoryId = _idDefault;
+  try {
+    if (localStorage.getItem('types')) {
+      var category = JSON.parse(localStorage.getItem('types'));
+      var categoryId = category.find(e => e.name === _nameCategory);
+
+      if (categoryId) {
+        _categoryId = categoryId._id;
+      }
+    }
+  } catch (error) {
+
+  }
+  page_product_list(_skip + 1, _categoryId);
+  var res = await fetch(URL + '/products?typeId=' + _categoryId + `&$skip=${_skip * 16}` + '&$limit=16', {
+    method: 'GET',
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json'
+    }
+  });
+  var json = await res.json();
+  if (json.total) {
+    var htmlInner = '';
+    document.getElementById('listProducts').innerHTML = htmlInner;
+    var firstInner = '<div class="mid-popular">';
+    var endInner = '<div class="clearfix"></div></div>';
+    var _temp = ``;
+    json.data.forEach((e, i) => {
+      _temp += `<div class="col-md-3 item-grid simpleCart_shelfItem"><div class=" mid-pop"><div class="pro-img"><img src="${e.image}" class="img-responsive" alt=""><div class="zoom-icon "><a class="picture" href="${e.image}" rel="title" class="b-link-stripe b-animate-gothickbox"><iclass="glyphicon glyphicon-search icon "></i></a><a href="single.html?id=${e._id}"><i class="glyphicon glyphicon-menu-right icon"></i></a></div></div><div class="mid-1"><div class="women"><div class="women-top"><span>NEW</span><h6><a href="single.html?id=${e._id}">${e.name}</a></h6></div><div class="img item_add"><a href="#"><img src="images/ca.png" alt=""></a></div><div class="clearfix"></div></div><div class="mid-2"><p><label>${e.discount > 0 ? `$${e.cost.toFixed(2)}` : ''}</label><em class="item_price">$${(e.cost - e.discount).toFixed(2)}</em></p><div class="block"><div class="starbox small ghosting"> </div></div><div class="clearfix"></div></div></div></div></div>`;
       if (i + 1 === json.data.length || (i + 1) % 4 === 0) {
         htmlInner += firstInner + _temp + endInner;
         _temp = '';
@@ -173,45 +275,68 @@ async function getCategories() {
   localStorage.setItem('categories', JSON.stringify(json.data))
 }
 
-function getProducts() {
+async function getTypes() {
+  var json = await get(URL + '/types');
+  localStorage.setItem('types', JSON.stringify(json.data))
+}
+
+function getProducts(_skip) {
   var _link = window.location.href;
   if (_link.indexOf('edition.html') !== -1) {
-    getProduct('Edition set', '5f7ddf4c1e604837c8f00640');
+    getProduct('Edition set', '5f7ddf4c1e604837c8f00640', _skip);
     return;
   }
   if (_link.indexOf('tool.html') !== -1) {
-    getProduct('Tool', '5f7ddf621e604837c8f00641');
+    getProduct('Tool', '5f7ddf621e604837c8f00641', _skip);
     return;
   }
   if (_link.indexOf('eye.html') !== -1) {
-    getProduct('Eye', '5f7ddf6d1e604837c8f00642');
+    getProduct('Eye', '5f7ddf6d1e604837c8f00642', _skip);
     return;
   }
   if (_link.indexOf('cheek.html') !== -1) {
-    getProduct('Cheek', '5f7ddf761e604837c8f00643');
+    getProduct('Cheek', '5f7ddf761e604837c8f00643', _skip);
     return;
   }
   if (_link.indexOf('serum.html') !== -1) {
-    getProduct('Serum & Toner', '5f7ddf9a1e604837c8f00644');
+    getProduct('Serum & Toner', '5f7ddf9a1e604837c8f00644', _skip);
     return;
   }
   if (_link.indexOf('mask.html') !== -1) {
-    getProduct('Mask', '5f7ddfac1e604837c8f00645');
+    getProduct('Mask', '5f7ddfac1e604837c8f00645', _skip);
     return;
   }
   if (_link.indexOf('hair.html') !== -1) {
-    getProduct('Body & Hair', '5f7ddfc01e604837c8f00646');
+    getProduct('Body & Hair', '5f7ddfc01e604837c8f00646', _skip);
     return;
   }
   if (_link.indexOf('nail.html') !== -1) {
-    getProduct('Nail', '5f7ddfcf1e604837c8f00647');
+    getProduct('Nail', '5f7ddfcf1e604837c8f00647', _skip);
+    return;
+  }
+  if (_link.indexOf('index.html') !== -1) {
+    getProductList('New', '5f7ddeed1e604837c8f0063d', 0);
+    return;
+  }
+  if (_link.indexOf('single.html') !== -1) {
+    var _index = _link.indexOf('?id=');
+    if (_index !== -1) {
+      var _id = _link.substr(_index + 4, _link.length - _index - 4);
+      singlePage(_id);
+    }
     return;
   }
 }
 
-getCategories();
+async function singlePage(_id) {
+  var json = await get(URL + '/products?_id=' + _id);
+  console.log(json);
+}
 
-getProducts();
+// run
+getCategories();
+getTypes();
+getProducts(0);
 
 // function utils
 function resetLink(_link) {
