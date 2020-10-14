@@ -156,6 +156,19 @@ async function get(_url) {
   return json;
 }
 
+async function post(_url, _obj) {
+  var res = await fetch(_url, {
+    method: 'POST',
+    body: JSON.stringify({ ..._obj }),
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json'
+    }
+  });
+  var json = await res.json();
+  console.log(json)
+}
+
 // users
 async function postUser() {
   event.preventDefault();
@@ -326,6 +339,22 @@ function getProducts(_skip) {
     }
     return;
   }
+  if (_link.indexOf('checkout.html') !== -1) {
+    getProductCheckout();
+  }
+}
+
+async function getProductCheckout() {
+  var _checkout = JSON.parse(localStorage.getItem('checkout'));
+  var arr = [];
+  Object.keys(_checkout).forEach((e, i) => arr.push(e));
+  var json = await get(URL + '/products?$in=' + JSON.stringify({ name: '_id', value: arr }));
+  var _temp = '<tr><th class="table-grid">Item</th><th>Prices</th><th>NumOfProduct </th><th>Subtotal</th></tr>';
+  json.data.map((e, i) => {
+    e['numOfProduct'] = _checkout[e._id];
+    _temp += `<tr class="cart-header"><td class="ring-in"><a href="single.html?id=${e._id}" class="at-in"><img src="${e.image}" class="img-responsive" alt=""></a><div class="sed"><h5><a href="single.html">${e.name}</a></h5><p>(Lip Concern: Dry Lips. Skin Type: Sensitive. Specialty: Mineral Oil ) </p></div><div class="clearfix"> </div><div class="close${i + 1}"> </div></td><td>$${(e.cost - e.discount).toFixed(2)}</td><td>${e.numOfProduct}</td><td class="item_price">$${((e.cost - e.discount) * e.numOfProduct).toFixed(2)}</td><td class="add-check"><a class="item_add hvr-skew-backward" href="#">Add To Cart</a></td></tr>`;
+  });
+  document.getElementById('listProductCheckout').innerHTML = _temp;
 }
 
 async function singlePage(_id) {
@@ -339,6 +368,35 @@ async function singlePage(_id) {
     document.getElementById('tab2').innerHTML = `<div class="facts"><p>${product.information}</p><ul><li><span class="glyphicon glyphicon-ok" aria-hidden="true"></span>Multimedia Systems</li><li><span class="glyphicon glyphicon-ok" aria-hidden="true"></span>Digital media adapters</li><li><span class="glyphicon glyphicon-ok" aria-hidden="true"></span>Set top boxes for HDTV and IPTV Player </li></ul></div>0`;
     document.getElementById('tab3').innerHTML = `<div class="facts"><p>${product.reviews}</p><ul><li><span class="glyphicon glyphicon-ok" aria-hidden="true"></span>Research</li><li><span class="glyphicon glyphicon-ok" aria-hidden="true"></span>Design and Development</li><li><span class="glyphicon glyphicon-ok" aria-hidden="true"></span>Porting and Optimization</li><li><span class="glyphicon glyphicon-ok" aria-hidden="true"></span>System integration</li><li><span class="glyphicon glyphicon-ok" aria-hidden="true"></span>Verification, Validation and Testing</li><li><span class="glyphicon glyphicon-ok" aria-hidden="true"></span>Maintenance and Support</li></ul></div>`;
   }
+}
+
+function addProductToCart() {
+  var _text = document.getElementById('numOfProduct').textContent;
+  var _num = parseInt(_text);
+  var _link = window.location.href;
+  var _index = _link.indexOf('?id=');
+  if (_link[_link.length - 1] === '#')
+    var _id = _link.substr(_index + 4, _link.length - _index - 5);
+  else
+    var _id = _link.substr(_index + 4, _link.length - _index - 4);
+
+  var arr = {};
+  if (localStorage.getItem('checkout')) {
+    arr = { ...JSON.parse(localStorage.getItem('checkout')) }
+  }
+
+  arr[_id] = _num;
+  localStorage.setItem('checkout', JSON.stringify(arr));
+  console.log(localStorage.getItem('checkout'));
+}
+
+function producedToBuy() {
+  post(URL + '/checkouts', {
+    userId: localStorage.getItem('_id'),
+    products: JSON.parse(localStorage.getItem('checkout'))
+  });
+  getProductCheckout();
+  localStorage.removeItem('checkout');
 }
 
 // run

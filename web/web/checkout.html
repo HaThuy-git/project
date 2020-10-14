@@ -283,15 +283,16 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 
             <div class="bs-example4" data-example-id="simple-responsive-table">
                 <div class="table-responsive">
-                    <table class="table-heading simpleCart_shelfItem">
+                    <table class="table-heading simpleCart_shelfItem" id="listProductCheckout">
                         <tr>
                             <th class="table-grid">Item</th>
 
                             <th>Prices</th>
-                            <th>Delivery </th>
+                            <th>NumOfProduct </th>
                             <th>Subtotal</th>
                         </tr>
-                        <tr class="cart-header">
+                        <!-- <tbody id="listProductCheckout"></tbody> -->
+                        <!-- <tr class="cart-header">
 
                             <td class="ring-in">
                                 <a href="single.html" class="at-in"><img src="images/edition1.jpg" class="img-responsive" alt=""></a>
@@ -337,13 +338,13 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
                             <td>FREE SHIPPING</td>
                             <td class="item_price">$51.00</td>
                             <td class="add-check"><a class="item_add hvr-skew-backward" href="#">Add To Cart</a></td>
-                        </tr>
+                        </tr> -->
 
                     </table>
                 </div>
             </div>
             <div class="produced">
-                <a href="single.html" class="hvr-skew-backward">Produced To Buy</a>
+                <a href="#" class="hvr-skew-backward" onclick="producedToBuy()">Produced To Buy</a>
             </div>
         </div>
     </div>
