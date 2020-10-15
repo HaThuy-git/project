@@ -278,11 +278,12 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
             });
         });
     </script>
-    <div class="check-out">
+    <div class="check-out" id="role_checkout_page">
         <div class="container">
 
             <div class="bs-example4" data-example-id="simple-responsive-table">
                 <div class="table-responsive">
+                    Enter _id want delete: <input id="_id_deleteProductCheckout"/> <button onclick="deleteProductCheckout()">Delete</button>
                     <table class="table-heading simpleCart_shelfItem" id="listProductCheckout">
                         <tr>
                             <th class="table-grid">Item</th>
@@ -345,6 +346,23 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
             </div>
             <div class="produced">
                 <a href="#" class="hvr-skew-backward" onclick="producedToBuy()">Produced To Buy</a>
+            </div>
+        </div>
+    </div>
+    <div class="check-out" id="admin_checkout_page">
+        <div class="container">
+            <div class="bs-example4" data-example-id="simple-responsive-table">
+                <div class="table-responsive">
+                    Enter _id want delete: <input id="admin_id_deleteProductCheckout"/> <button onclick="admin_deleteProductCheckout()">Delete</button>
+                    <table class="table-heading simpleCart_shelfItem" id="admin_listProductCheckout">
+                        <tr>
+                            <th class="table-grid">UserId</th>
+                            <th>Prices</th>
+                            <th>List of products </th>
+                            <th>id</th>
+                        </tr>
+                    </table>
+                </div>
             </div>
         </div>
     </div>

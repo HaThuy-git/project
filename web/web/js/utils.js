@@ -169,6 +169,19 @@ async function post(_url, _obj) {
   console.log(json)
 }
 
+async function put(_url, _obj) {
+  var res = await fetch(_url, {
+    method: 'PUT',
+    body: JSON.stringify({ ..._obj }),
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json'
+    }
+  });
+  var json = await res.json();
+  console.log(json)
+}
+
 // users
 async function postUser() {
   event.preventDefault();
@@ -340,6 +353,12 @@ function getProducts(_skip) {
     return;
   }
   if (_link.indexOf('checkout.html') !== -1) {
+    if (localStorage.getItem('role') === 'admin') {
+      document.getElementById('role_checkout_page').style.visibility = 'hidden';
+      getProductCheckoutAdmin();
+      return;
+    }
+    document.getElementById('admin_checkout_page').style.visibility = 'hidden';
     getProductCheckout();
   }
 }
@@ -352,9 +371,44 @@ async function getProductCheckout() {
   var _temp = '<tr><th class="table-grid">Item</th><th>Prices</th><th>NumOfProduct </th><th>Subtotal</th></tr>';
   json.data.map((e, i) => {
     e['numOfProduct'] = _checkout[e._id];
-    _temp += `<tr class="cart-header"><td class="ring-in"><a href="single.html?id=${e._id}" class="at-in"><img src="${e.image}" class="img-responsive" alt=""></a><div class="sed"><h5><a href="single.html">${e.name}</a></h5><p>(Lip Concern: Dry Lips. Skin Type: Sensitive. Specialty: Mineral Oil ) </p></div><div class="clearfix"> </div><div class="close${i + 1}"> </div></td><td>$${(e.cost - e.discount).toFixed(2)}</td><td>${e.numOfProduct}</td><td class="item_price">$${((e.cost - e.discount) * e.numOfProduct).toFixed(2)}</td><td class="add-check"><a class="item_add hvr-skew-backward" href="#">Add To Cart</a></td></tr>`;
+    _temp += `<tr class="cart-header"><td class="ring-in"><a href="single.html?id=${e._id}" class="at-in"><img src="${e.image}" class="img-responsive" alt=""></a><div class="sed"><h5><a href="single.html">${e.name}</a></h5><p>(Lip Concern: Dry Lips. Skin Type: Sensitive. Specialty: Mineral Oil ) </p></div><div class="clearfix"> </div><div class="close${i + 1}"></div></td><td>$${(e.cost - e.discount).toFixed(2)}</td><td>${e.numOfProduct}</td><td class="item_price">$${((e.cost - e.discount) * e.numOfProduct).toFixed(2)}</td><td class="add-check">${e._id}</td></tr>`;
   });
   document.getElementById('listProductCheckout').innerHTML = _temp;
+}
+
+async function getProductCheckoutAdmin() {
+  var json_checkouts = await get(URL + '/checkouts?resolve=0');
+  var checkouts = json_checkouts.data;
+  var listAdmin = [];
+  for (let index = 0; index < checkouts.length; index++) {
+    var e = checkouts[index];
+    var arr = [];
+    Object.keys(e.products).forEach((id, i) => arr.push(id));
+    var product_list = await get(URL + '/products?$in=' + JSON.stringify({ name: '_id', value: arr }));
+    var prices = 0;
+    var list_products = '';
+    product_list.data.forEach((product, i) => { prices += (product.cost - product.discount) * e.products[product._id]; list_products += product._id });
+    listAdmin.push({
+      ...e,
+      prices: prices,
+      listOfProducts: list_products
+    })
+  }
+  var _temp = '<tr><th class="table-grid">UserId</th><th>Prices</th><th>List of products </th><th>id</th></tr>';
+  listAdmin.forEach((e, i) => {
+    _temp += `<tr><th class="table-grid">${e.userId}</th><th>${e.prices}</th><th>${e.listOfProducts}</th><th>${e._id}</th></tr>`;
+  });
+  document.getElementById('admin_listProductCheckout').innerHTML = _temp;
+}
+
+function admin_deleteProductCheckout() {
+  var id = document.getElementById('admin_id_deleteProductCheckout').value;
+  document.getElementById('admin_id_deleteProductCheckout').value = '';
+  put(URL + '/checkouts', {
+    _id: id,
+    resolve: 1
+  })
+  getProductCheckoutAdmin();
 }
 
 async function singlePage(_id) {
@@ -390,13 +444,26 @@ function addProductToCart() {
   console.log(localStorage.getItem('checkout'));
 }
 
-function producedToBuy() {
-  post(URL + '/checkouts', {
-    userId: localStorage.getItem('_id'),
-    products: JSON.parse(localStorage.getItem('checkout'))
-  });
+function deleteProductCheckout() {
+  var products = JSON.parse(localStorage.getItem('checkout'));
+  delete products[document.getElementById('_id_deleteProductCheckout').value];
+  document.getElementById('_id_deleteProductCheckout').value = '';
+  localStorage.setItem('checkout', JSON.stringify(products));
   getProductCheckout();
-  localStorage.removeItem('checkout');
+}
+
+function producedToBuy() {
+  if (localStorage.getItem('_id')) {
+    post(URL + '/checkouts', {
+      userId: localStorage.getItem('_id'),
+      products: JSON.parse(localStorage.getItem('checkout'))
+    });
+    getProductCheckout();
+    localStorage.removeItem('checkout');
+  }
+  else {
+    alert('You must login to buy now');
+  }
 }
 
 // run
