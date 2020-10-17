@@ -182,6 +182,18 @@ async function put(_url, _obj) {
   console.log(json)
 }
 
+async function uploadFile() {
+  var formData = new FormData();
+   formData.append('productId', '5f7f2001b2ea921e6cf3919f');
+  Object.fro
+  var res = await fetch(URL + '/uploads-products', {
+    method: 'POST',
+    body: formData,
+  });
+  var json = await res.json();
+  console.log(json);
+}
+
 // users
 async function postUser() {
   event.preventDefault();
