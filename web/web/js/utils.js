@@ -184,7 +184,7 @@ async function put(_url, _obj) {
 
 async function uploadFile() {
   var formData = new FormData();
-   formData.append('productId', '5f7f2001b2ea921e6cf3919f');
+  formData.append('productId', '5f7f2001b2ea921e6cf3919f');
   Object.fro
   var res = await fetch(URL + '/uploads-products', {
     method: 'POST',
@@ -353,7 +353,7 @@ function getProducts(_skip) {
     return;
   }
   if (_link.indexOf('index.html') !== -1) {
-    getProductList('New', '5f7ddeed1e604837c8f0063d', 0);
+    getProductList('New', '5f7ddeed1e604837c8f0063d', _skip);
     return;
   }
   if (_link.indexOf('single.html') !== -1) {
@@ -391,24 +391,39 @@ async function getProductCheckout() {
 async function getProductCheckoutAdmin() {
   var json_checkouts = await get(URL + '/checkouts?resolve=0');
   var checkouts = json_checkouts.data;
-  var listAdmin = [];
+  var listAdmin = []; // list of checkouts
   for (let index = 0; index < checkouts.length; index++) {
     var e = checkouts[index];
+    // get user order
+    var users = await get(URL + '/users?_id=' + e.userId);
+    var user = '';
+    if (users.total) {
+      user = `<p><b>Name: </b> ${users.data[0].name}</p>` + `<p><b>Phone: </b> ${users.data[0].phone}</p>`;
+    }
+    // get list of products by user order
     var arr = [];
     Object.keys(e.products).forEach((id, i) => arr.push(id));
     var product_list = await get(URL + '/products?$in=' + JSON.stringify({ name: '_id', value: arr }));
     var prices = 0;
     var list_products = '';
-    product_list.data.forEach((product, i) => { prices += (product.cost - product.discount) * e.products[product._id]; list_products += product._id });
+    var details = '';
+    product_list.data.forEach((product, i) => {
+      prices += (product.cost - product.discount) * e.products[product._id];
+      list_products += product._id;
+      details += `<p><b>${product.name}</b> - ${e.products[product._id]}</p>`;
+    });
+    // setup data display page checkout for role=admin
     listAdmin.push({
       ...e,
       prices: prices,
-      listOfProducts: list_products
-    })
+      listOfProducts: list_products,
+      details: details,
+      user: user
+    });
   }
-  var _temp = '<tr><th class="table-grid">UserId</th><th>Prices</th><th>List of products </th><th>id</th></tr>';
+  var _temp = '<tr><th class="table-grid">User details</th><th>Prices</th><th>List of products - numbers</th><th>id</th></tr>';
   listAdmin.forEach((e, i) => {
-    _temp += `<tr><th class="table-grid">${e.userId}</th><th>${e.prices}</th><th>${e.listOfProducts}</th><th>${e._id}</th></tr>`;
+    _temp += `<tr><th class="table-grid">${e.user}</th><th>${e.prices}</th><th>${e.details}</th><th>${e._id}</th></tr>`;
   });
   document.getElementById('admin_listProductCheckout').innerHTML = _temp;
 }
