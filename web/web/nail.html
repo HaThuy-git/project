@@ -35,8 +35,8 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
     <script src="js/jstarbox.js"></script>
     <link rel="stylesheet" href="css/jstarbox.css" type="text/css" media="screen" charset="utf-8" />
     <script type="text/javascript">
-        jQuery(function() {
-            jQuery('.starbox').each(function() {
+        jQuery(function () {
+            jQuery('.starbox').each(function () {
                 var starbox = jQuery(this);
                 starbox.starbox({
                     average: starbox.attr('data-start-value'),
@@ -45,7 +45,7 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
                     autoUpdateAverage: starbox.hasClass('autoupdate'),
                     buttons: starbox.hasClass('smooth') ? false : starbox.attr('data-button-count') || 5,
                     stars: starbox.attr('data-star-count') || 5
-                }).bind('starbox-value-changed', function(event, value) {
+                }).bind('starbox-value-changed', function (event, value) {
                     if (starbox.hasClass('random')) {
                         var val = Math.random();
                         starbox.next().text(' ' + val);
@@ -74,7 +74,7 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
             <div class="container">
                 <div class="col-sm-5 col-md-offset-2  header-login">
                     <ul>
-                       <li><a onclick="logout()" id="accountLocalStorage" style="cursor:pointer;">Login</a></li>
+                        <li><a onclick="logout()" id="accountLocalStorage" style="cursor:pointer;">Login</a></li>
                         <li><a href="register.html">Register</a></li>
                         <li><a href="checkout.html">Checkout</a></li>
                     </ul>
@@ -103,12 +103,13 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 
                         <!-- Brand and toggle get grouped for better mobile display -->
                         <div class="navbar-header nav_2">
-                            <button type="button" class="navbar-toggle collapsed navbar-toggle1" data-toggle="collapse" data-target="#bs-megadropdown-tabs">
-								<span class="sr-only">Toggle navigation</span>
-								<span class="icon-bar"></span>
-								<span class="icon-bar"></span>
-								<span class="icon-bar"></span>
-							</button>
+                            <button type="button" class="navbar-toggle collapsed navbar-toggle1" data-toggle="collapse"
+                                data-target="#bs-megadropdown-tabs">
+                                <span class="sr-only">Toggle navigation</span>
+                                <span class="icon-bar"></span>
+                                <span class="icon-bar"></span>
+                                <span class="icon-bar"></span>
+                            </button>
 
                         </div>
                         <!-- Collect the nav links, forms, and other content for toggling -->
@@ -117,7 +118,8 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
                                 <li><a class="color" href="index.html">Home</a></li>
 
                                 <li class="dropdown mega-dropdown active">
-                                    <a class="color1" href="#" class="dropdown-toggle" data-toggle="dropdown">Makeup<span class="caret"></span></a>
+                                    <a class="color1" href="#" class="dropdown-toggle"
+                                        data-toggle="dropdown">Makeup<span class="caret"></span></a>
                                     <div class="dropdown-menu ">
                                         <div class="menu-top">
                                             <div class="col1">
@@ -148,7 +150,8 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
                                     </div>
                                 </li>
                                 <li class="dropdown mega-dropdown active">
-                                    <a class="color2" href="#" class="dropdown-toggle" data-toggle="dropdown">Skincare<span class="caret"></span></a>
+                                    <a class="color2" href="#" class="dropdown-toggle"
+                                        data-toggle="dropdown">Skincare<span class="caret"></span></a>
                                     <div class="dropdown-menu mega-dropdown-menu">
                                         <div class="menu-top">
                                             <div class="col1">
@@ -193,14 +196,16 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
                                 <span class="glyphicon glyphicon-heart" aria-hidden="true"></span>
                             </a>
                         </li>
-                        <li><a class="play-icon popup-with-zoom-anim" href="#small-dialog"><i class="glyphicon glyphicon-search"> </i></a></li>
+                        <li><a class="play-icon popup-with-zoom-anim" href="#small-dialog"><i
+                                    class="glyphicon glyphicon-search"> </i></a></li>
                     </ul>
                     <div class="cart box_1">
                         <a href="checkout.html">
                             <h3>
                                 <div class="total">
                                     <span class="simpleCart_total"></span></div>
-                                <img src="images/cart.png" alt="" /></h3>
+                                <img src="images/cart.png" alt="" />
+                            </h3>
                         </a>
                         <p><a href="javascript:;" class="simpleCart_empty">Empty Cart</a></p>
 
@@ -217,13 +222,15 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
                         <div class="search-top">
                             <div class="login-search">
                                 <input type="submit" value="">
-                                <input type="text" value="Search.." onfocus="this.value = '';" onblur="if (this.value == '') {this.value = 'Search..';}">
+                                <input type="text" value="Search.." onfocus="this.value = '';"
+                                    onchange="changeSearchProduct()"
+                                    onblur="if (this.value == '') {this.value = 'Search..';}">
                             </div>
                             <p>Shopin</p>
                         </div>
                     </div>
                     <script>
-                        $(document).ready(function() {
+                        $(document).ready(function () {
                             $('.popup-with-zoom-anim').magnificPopup({
                                 type: 'inline',
                                 fixedContentPos: false,
@@ -311,11 +318,11 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
                 </div> -->
         <!--initiate accordion-->
         <script type="text/javascript">
-            $(function() {
+            $(function () {
                 var menu_ul = $('.menu-drop > li > ul'),
                     menu_a = $('.menu-drop > li > a');
                 menu_ul.hide();
-                menu_a.click(function(e) {
+                menu_a.click(function (e) {
                     e.preventDefault();
                     if (!$(this).hasClass('active')) {
                         menu_a.removeClass('active');
@@ -405,7 +412,8 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
             <div class="container">
                 <div class="col-md-3 footer-middle-in">
                     <a href="index.html"><img src="images/log.png" alt=""></a>
-                    <p>All fields marked with an asterisk are mandatory. BEAUX is responsible for the processing of your data. For more information please contact by e-mail at the following address beaux@gmail.com.
+                    <p>All fields marked with an asterisk are mandatory. BEAUX is responsible for the processing of your
+                        data. For more information please contact by e-mail at the following address beaux@gmail.com.
                     </p>
                 </div>
 
@@ -420,7 +428,7 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
                     <ul class="in in1">
                         <li><a href="#">Order History</a></li>
                         <li><a href="wishlist.html">Wish List</a></li>
-                       <li><a onclick="logout()" id="accountLocalStorage" style="cursor:pointer;">Login</a></li>
+                        <li><a onclick="logout()" id="accountLocalStorage" style="cursor:pointer;">Login</a></li>
                     </ul>
                     <div class="clearfix"></div>
                 </div>
@@ -440,7 +448,8 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
                     <h6>Newsletter</h6>
                     <span>Sign up for News Letter</span>
                     <form>
-                        <input type="text" value="Enter your E-mail" onfocus="this.value='';" onblur="if (this.value == '') {this.value ='Enter your E-mail';}">
+                        <input type="text" value="Enter your E-mail" onfocus="this.value='';"
+                            onblur="if (this.value == '') {this.value ='Enter your E-mail';}">
                         <input type="submit" value="Subscribe">
                     </form>
                 </div>
@@ -479,7 +488,7 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
     <link rel="stylesheet" href="css/chocolat.css" type="text/css" media="screen" charset="utf-8">
     <!--light-box-files -->
     <script type="text/javascript" charset="utf-8">
-        $(function() {
+        $(function () {
             $('a.picture').Chocolat();
         });
     </script>
